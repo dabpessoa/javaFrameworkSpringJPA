@@ -8,7 +8,7 @@ public abstract class AbstractSpringContextProvider<P extends SpringContextProvi
 
     public SpringContextProvider getSpringContextProvider() {
         if (springContextProvider == null) {
-            Class<SpringContextProvider> springContextProviderClass = (Class<SpringContextProvider>) GenericsUtils.discoverClass(this.getClass() , 0);
+            Class<SpringContextProvider> springContextProviderClass = (Class<SpringContextProvider>) GenericsUtils.discoverClass(this.getClass() , 3);
             try {
                 springContextProvider = (P) springContextProviderClass.newInstance();
             } catch (InstantiationException e) {
