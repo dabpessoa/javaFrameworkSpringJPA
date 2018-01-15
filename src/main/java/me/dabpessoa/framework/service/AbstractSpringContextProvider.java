@@ -1,13 +1,17 @@
 package me.dabpessoa.framework.service;
 
 import me.dabpessoa.framework.util.GenericsUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 public abstract class AbstractSpringContextProvider<P extends SpringContextProvider> {
 
-    protected P springContextProvider;
+    @Autowired(required = false)
+    @Qualifier("springContextProvider")
+    private P springContextProvider;
 
     public SpringContextProvider getSpringContextProvider() {
         if (this.springContextProvider == null) {
