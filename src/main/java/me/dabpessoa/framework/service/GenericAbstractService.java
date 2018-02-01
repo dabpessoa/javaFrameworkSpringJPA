@@ -70,6 +70,7 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
+<<<<<<< HEAD
 	public void insert(T entity) {
 		validateInsert(entity);
 		validateInsertAndUpdate(entity);
@@ -81,10 +82,15 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 
 		afterInsert(entity);
 		afterInsertAndUpdate(entity);
+=======
+	public void insert(T bean) {
+		getRepository().insert(bean);
+>>>>>>> 3af74038f154f5fba8e64565706a1718f3dbda61
 	}
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
+<<<<<<< HEAD
 	public void update(T entity) {
 		validateUpdate(entity);
 		validateInsertAndUpdate(entity);
@@ -96,42 +102,65 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 
 		afterUpdate(entity);
 		afterInsertAndUpdate(entity);
+=======
+	public void update(T bean) {
+		getRepository().update(bean);
+>>>>>>> 3af74038f154f5fba8e64565706a1718f3dbda61
 	}
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
 	public void insertAll(Collection<T> entities) {
+<<<<<<< HEAD
 		beforeInsertAll(entities);
 		for (T entity : entities) {
 			insert(entity);
 		}
 		afterInsertAll(entities);
+=======
+		for (T entity : entities) {
+			insert(entity);
+		}
+>>>>>>> 3af74038f154f5fba8e64565706a1718f3dbda61
 	}
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
 	public void updateAll(Collection<T> entities) {
+<<<<<<< HEAD
 		beforeUpdateAll(entities);
 		for (T entity : entities) {
 			update(entity);
 		}
 		afterUpdateAll(entities);
+=======
+		for (T entity : entities) {
+			update(entity);
+		}
+>>>>>>> 3af74038f154f5fba8e64565706a1718f3dbda61
 	}
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
 	public void insertOrUpdateAll(Collection<T> entities) {
+<<<<<<< HEAD
 		beforeInsertOrUpdateAll(entities);
+=======
+>>>>>>> 3af74038f154f5fba8e64565706a1718f3dbda61
 		if (entities == null) return;
 		for (T entity : entities) {
 			insertOrUpdate(entity);
 		}
+<<<<<<< HEAD
 		afterInsertOrUpdateAll(entities);
+=======
+>>>>>>> 3af74038f154f5fba8e64565706a1718f3dbda61
 	}
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
 	public void insertOrUpdate(T entity) {
+<<<<<<< HEAD
 		beforeInsertOrUpdate(entity);
 		if (entity == null) throw new NullPointerException("Entidade nula. Class: "+GenericsUtils.discoverClass( this.getClass() , 0));
 
@@ -139,6 +168,14 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 		else update(entity);
 
 		afterInsertOrUpdate(entity);
+=======
+		if (entity == null) return;
+		if (entity.getId() == null) {
+			insert(entity);
+		} else {
+			update(entity);
+		}
+>>>>>>> 3af74038f154f5fba8e64565706a1718f3dbda61
 	}
 
 	@Override
@@ -148,7 +185,10 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 		boolean managed = getRepository().getEntityManager().contains(entity);
 		if (!managed) entity = merge(entity);
 		getRepository().delete(entity);
+<<<<<<< HEAD
 		afterDelete(entity);
+=======
+>>>>>>> 3af74038f154f5fba8e64565706a1718f3dbda61
 	}
 
 	@Override
@@ -160,12 +200,16 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 				delete(entity);
 			}
 		}
+<<<<<<< HEAD
 		afterDeleteAll(entities);
+=======
+>>>>>>> 3af74038f154f5fba8e64565706a1718f3dbda61
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
 	public int deleteFast(T entity) {
 		beforeDelete(entity);
+<<<<<<< HEAD
 		int deleteReturn = getRepository().deleteFast(entity);
 		afterDelete(entity);
 		return deleteReturn;
@@ -173,13 +217,23 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
 	public void deleteAllFast(Collection<T> entities) {
+=======
+		return getRepository().deleteFast(entity);
+	}
+
+	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
+	public void deleteAllFast(List<T> entities) {
+>>>>>>> 3af74038f154f5fba8e64565706a1718f3dbda61
 		beforeDeleteAll(entities);
 		if (entities != null && !entities.isEmpty()) {
 			for (T entity : entities) {
 				deleteFast(entity);
 			}
 		}
+<<<<<<< HEAD
 		afterDeleteAll(entities);
+=======
+>>>>>>> 3af74038f154f5fba8e64565706a1718f3dbda61
 	}
 
 	@Override
@@ -192,6 +246,7 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 	public void beforeDelete(T entity) {}
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
+<<<<<<< HEAD
 	public void afterDelete(T entity) {}
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
@@ -250,5 +305,8 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
 	public void afterInsertAndUpdate(T entity) {}
+=======
+	public void beforeDeleteAll(List<T> entities) {}
+>>>>>>> 3af74038f154f5fba8e64565706a1718f3dbda61
 
 }
