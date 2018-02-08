@@ -18,7 +18,6 @@ public abstract class BaseEntity implements Serializable {
 	
 	public abstract Long getId();
 
-<<<<<<< HEAD
 	public boolean isUpdating() {
 		return getId() != null;
 	}
@@ -27,8 +26,6 @@ public abstract class BaseEntity implements Serializable {
 		return !isUpdating();
 	}
 
-=======
->>>>>>> 3af74038f154f5fba8e64565706a1718f3dbda61
 	@Override
 	public int hashCode() {
 		final int prime = 31;
