@@ -30,11 +30,11 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 		return getRepository().getDaoHelper().findByHQLEntityFilter(entity);
 	}
 
-	public List<T> findByHQLEntityFilter(T entity, String... orderByFields) {
+	public List<T> findByHQLEntityFilter(T entity, String orderByFields) {
 		return getRepository().getDaoHelper().findByHQLEntityFilter(entity, orderByFields);
 	}
 
-	public List<T> findByHQLEntityFilterWithFromAppend(T entity, String fromClauseAppendText, String... orderByFields) {
+	public List<T> findByHQLEntityFilterWithFromAppend(T entity, String fromClauseAppendText, String orderByFields) {
 		return getRepository().getDaoHelper().findByHQLEntityFilterWithFromAppend(entity, fromClauseAppendText, orderByFields);
 	}
 
@@ -42,7 +42,7 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 		return findByHQLFilter(params, null);
 	}
 
-	public List<T> findByHQLFilter(Map<String, Object> params, String... orderByFields) {
+	public List<T> findByHQLFilter(Map<String, Object> params, String orderByFields) {
 		Class<?> clazz = GenericsUtils.discoverClass( this.getClass() , 0);
 		return getRepository().getDaoHelper().findByHQLFilter(clazz, params, orderByFields);
 	}

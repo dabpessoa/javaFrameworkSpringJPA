@@ -242,44 +242,63 @@ public class JPADaoHelper {
 	}
 
 	@Transactional(readOnly=true)
-	public <T> List<T> findByHQLEntityFilter(T entity, String... fieldsOrderBy) {
+	public <T> List<T> findByHQLEntityFilter(T entity) {
 		Map<String, Object> params = createDefaultFieldsMapParams(entity);
-		return findByHQLFilter(entity.getClass(), params, fieldsOrderBy);
+		return findByHQLFilter(entity.getClass(), params, null);
 	}
 
 	@Transactional(readOnly=true)
-	public <T> List<T> findByHQLEntityFilterWithFromAppend(T entity, String fromClauseAppendText, String... fieldsOrderBy) {
+	public <T> List<T> findByHQLEntityFilter(T entity, String orderByClause) {
 		Map<String, Object> params = createDefaultFieldsMapParams(entity);
-		return findByHQLFilter(entity.getClass(), params, fromClauseAppendText, fieldsOrderBy);
+		return findByHQLFilter(entity.getClass(), params, orderByClause);
 	}
 
 	@Transactional(readOnly=true)
-	public <T> List<T> findByHQLFilter(Class<?> clazz, Map<String, Object> params, String... fieldsOrderBy) {
+	public <T> List<T> findByHQLEntityFilterWithFromAppend(T entity, String fromClauseAppendText, String orderByClause) {
+		Map<String, Object> params = createDefaultFieldsMapParams(entity);
+		return findByHQLFilter(entity.getClass(), params, fromClauseAppendText, orderByClause);
+	}
+
+	@Transactional(readOnly=true)
+	public <T> List<T> findByHQLEntityFilterWithSelectAndFromAppend(T entity, String selectClause, String fromClauseAppendText, String orderByClause) {
+		Map<String, Object> params = createDefaultFieldsMapParams(entity);
 		List<QueryValue> queryValues = new ArrayList<>();
 		for (String key : params.keySet()) {
 			queryValues.add(new QueryValue(key, params.get(key)));
 		}
-		return findByHQLFilter(clazz, queryValues, fieldsOrderBy);
+		return findByHQLFilter(entity.getClass(), queryValues, selectClause, fromClauseAppendText, null, orderByClause);
 	}
 
 	@Transactional(readOnly=true)
-	public <T> List<T> findByHQLFilter(Class<?> clazz, Map<String, Object> params, String fromClauseAppendText, String... fieldsOrderBy) {
+	public <T> List<T> findByHQLFilter(Class<?> clazz, Map<String, Object> params, String orderByClause) {
 		List<QueryValue> queryValues = new ArrayList<>();
 		for (String key : params.keySet()) {
 			queryValues.add(new QueryValue(key, params.get(key)));
 		}
-		return findByHQLFilter(clazz, queryValues, fromClauseAppendText, fieldsOrderBy);
+		return findByHQLFilter(clazz, queryValues, orderByClause);
 	}
 
 	@Transactional(readOnly=true)
-	public <T> List<T> findByHQLFilter(Class<?> clazz, List<QueryValue> queryValues, String... fieldsOrderBy) {
-		return findByHQLFilter(clazz, queryValues, null, fieldsOrderBy);
+	public <T> List<T> findByHQLFilter(Class<?> clazz, Map<String, Object> params, String fromClauseAppendText, String orderByClause) {
+		List<QueryValue> queryValues = new ArrayList<>();
+		for (String key : params.keySet()) {
+			queryValues.add(new QueryValue(key, params.get(key)));
+		}
+		return findByHQLFilter(clazz, queryValues, null, fromClauseAppendText, null, orderByClause);
 	}
 
 	@Transactional(readOnly=true)
-	public <T> List<T> findByHQLFilter(Class<?> clazz, List<QueryValue> queryValues, String fromClauseAppendText, String... fieldsOrderBy) {
+	public <T> List<T> findByHQLFilter(Class<?> clazz, List<QueryValue> queryValues, String orderByClause) {
+		return findByHQLFilter(clazz, queryValues, null, null, null, orderByClause);
+	}
+
+	@Transactional(readOnly=true)
+	public <T> List<T> findByHQLFilter(Class<?> clazz, List<QueryValue> queryValues, String selectClause, String fromClauseAppendText, String groupByClause, String orderByClause) {
 		if (fromClauseAppendText == null) fromClauseAppendText = "";
-		StringBuffer sb = new StringBuffer("from "+clazz.getName()+" "+fromClauseAppendText+" where 1=1 ");
+		if (selectClause == null) selectClause = "";
+		if (groupByClause == null) groupByClause = "";
+		if (orderByClause == null) orderByClause = "";
+		StringBuffer sb = new StringBuffer(selectClause+" from "+clazz.getName()+" "+fromClauseAppendText+" where 1=1 ");
 
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -322,16 +341,9 @@ public class JPADaoHelper {
 			} else it.remove();
 		}
 
-		if (fieldsOrderBy != null && fieldsOrderBy.length != 0) {
-			for (int i = 0 ; i < fieldsOrderBy.length ; i++) {
-				String fieldOrderBy = fieldsOrderBy[i];
-				if (fieldOrderBy != null && !fieldOrderBy.isEmpty()) {
-					if (i == 0) sb.append(" order by ");
-					if (i + 1 == fieldsOrderBy.length) sb.append(fieldOrderBy);
-					else sb.append(fieldOrderBy+", ");
-				}
-			}
-		}
+		sb.append(" "+groupByClause+" ");
+
+		sb.append(" "+orderByClause+" ");
 
 		Query q = getEntityManager().createQuery(sb.toString());
 		for (String key : map.keySet()) {
