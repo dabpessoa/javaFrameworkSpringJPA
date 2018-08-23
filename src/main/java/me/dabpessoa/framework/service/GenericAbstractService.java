@@ -34,6 +34,10 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 		return getRepository().getDaoHelper().findByHQLEntityFilter(entity, orderByFields);
 	}
 
+	public List<T> findByHQLEntityFilterWithFromAppend(T entity, String fromClauseAppendText, String... orderByFields) {
+		return getRepository().getDaoHelper().findByHQLEntityFilterWithFromAppend(entity, fromClauseAppendText, orderByFields);
+	}
+
 	public List<T> findByHQLFilter(Map<String, Object> params) {
 		return findByHQLFilter(params, null);
 	}
@@ -72,11 +76,11 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
 
 	public void insert(T entity) {
-		validateInsert(entity);
-		validateInsertAndUpdate(entity);
-
 		beforeInsert(entity);
 		beforeInsertAndUpdate(entity);
+
+		validateInsert(entity);
+		validateInsertAndUpdate(entity);
 
 		getRepository().insert(entity);
 
@@ -87,11 +91,11 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
 	public void update(T entity) {
-		validateUpdate(entity);
-		validateInsertAndUpdate(entity);
-
 		beforeUpdate(entity);
 		beforeInsertAndUpdate(entity);
+
+		validateUpdate(entity);
+		validateInsertAndUpdate(entity);
 
 		getRepository().update(entity);
 

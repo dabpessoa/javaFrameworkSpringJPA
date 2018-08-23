@@ -242,16 +242,18 @@ public class JPADaoHelper {
 	}
 
 	@Transactional(readOnly=true)
-	public <T> List<T> findByHQLEntityFilter(T entity) {
-		Map<String, Object> params = createDefaultFieldsMapParams(entity);
-		return findByHQLFilter(entity.getClass(), params);
-	}
-
 	public <T> List<T> findByHQLEntityFilter(T entity, String... fieldsOrderBy) {
 		Map<String, Object> params = createDefaultFieldsMapParams(entity);
 		return findByHQLFilter(entity.getClass(), params, fieldsOrderBy);
 	}
 
+	@Transactional(readOnly=true)
+	public <T> List<T> findByHQLEntityFilterWithFromAppend(T entity, String fromClauseAppendText, String... fieldsOrderBy) {
+		Map<String, Object> params = createDefaultFieldsMapParams(entity);
+		return findByHQLFilter(entity.getClass(), params, fromClauseAppendText, fieldsOrderBy);
+	}
+
+	@Transactional(readOnly=true)
 	public <T> List<T> findByHQLFilter(Class<?> clazz, Map<String, Object> params, String... fieldsOrderBy) {
 		List<QueryValue> queryValues = new ArrayList<>();
 		for (String key : params.keySet()) {
@@ -261,8 +263,23 @@ public class JPADaoHelper {
 	}
 
 	@Transactional(readOnly=true)
+	public <T> List<T> findByHQLFilter(Class<?> clazz, Map<String, Object> params, String fromClauseAppendText, String... fieldsOrderBy) {
+		List<QueryValue> queryValues = new ArrayList<>();
+		for (String key : params.keySet()) {
+			queryValues.add(new QueryValue(key, params.get(key)));
+		}
+		return findByHQLFilter(clazz, queryValues, fromClauseAppendText, fieldsOrderBy);
+	}
+
+	@Transactional(readOnly=true)
 	public <T> List<T> findByHQLFilter(Class<?> clazz, List<QueryValue> queryValues, String... fieldsOrderBy) {
-		StringBuffer sb = new StringBuffer("from "+clazz.getName()+" where 1=1 ");
+		return findByHQLFilter(clazz, queryValues, null, fieldsOrderBy);
+	}
+
+	@Transactional(readOnly=true)
+	public <T> List<T> findByHQLFilter(Class<?> clazz, List<QueryValue> queryValues, String fromClauseAppendText, String... fieldsOrderBy) {
+		if (fromClauseAppendText == null) fromClauseAppendText = "";
+		StringBuffer sb = new StringBuffer("from "+clazz.getName()+" "+fromClauseAppendText+" where 1=1 ");
 
 		Map<String, Object> map = new HashMap<String, Object>();
 
