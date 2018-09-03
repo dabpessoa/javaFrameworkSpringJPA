@@ -76,11 +76,11 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
 
 	public void insert(T entity) {
-		beforeInsert(entity);
-		beforeInsertAndUpdate(entity);
-
 		validateInsert(entity);
 		validateInsertAndUpdate(entity);
+
+		beforeInsert(entity);
+		beforeInsertAndUpdate(entity);
 
 		getRepository().insert(entity);
 
@@ -91,17 +91,16 @@ public abstract class GenericAbstractService<T extends BaseEntity, ID extends Se
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false, rollbackFor=Throwable.class)
 	public void update(T entity) {
-		beforeUpdate(entity);
-		beforeInsertAndUpdate(entity);
-
 		validateUpdate(entity);
 		validateInsertAndUpdate(entity);
+
+		beforeUpdate(entity);
+		beforeInsertAndUpdate(entity);
 
 		getRepository().update(entity);
 
 		afterUpdate(entity);
 		afterInsertAndUpdate(entity);
-
 	}
 
 	@Override
